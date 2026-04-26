@@ -1,0 +1,5 @@
+HERO_BG=https://files.manuscdn.com/user_upload_by_module/session_file/310519663216536998/LwWXdvsfnDhtByUm.jpg
+COURSE_SECURITY=https://files.manuscdn.com/user_upload_by_module/session_file/310519663216536998/NuavqWVlEMFJnuvv.jpg
+INSTRUCTOR=https://files.manuscdn.com/user_upload_by_module/session_file/310519663216536998/EQxYXqZVdPDgSFpP.jpg
+STUDENTS_ONLINE=https://files.manuscdn.com/user_upload_by_module/session_file/310519663216536998/raipPLrUqsJMuedI.jpg
+ABSTRACT_PATTERN=https://files.manuscdn.com/user_upload_by_module/session_file/310519663216536998/wPemGyWvkVyFtIcM.jpg

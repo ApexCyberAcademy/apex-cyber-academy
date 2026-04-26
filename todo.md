@@ -1,0 +1,16 @@
+- [x] Fix LecturePlayer Arabic translation bug (getContent returns Arabic when lang=ar, sync toggle with global)
+- [x] Translate all 8 interactive labs to Arabic (bilingual lab experience)
+- [x] Use 'ابدأ من جديد' (Start Again) for all Play Again buttons in Arabic
+- [x] Fix Module 1 Day 1 Arabic content truncation (content cuts off before lab, page ends abruptly)
+- [x] Fix Arabic content truncation across all lectures — regenerated full Arabic translations for all 24 lectures using Gemini 2.5 Flash + manual review, updated database
+- [x] Remove Growth Roadmap section from the website (About page)
+- [x] Fix RTL table column order — resolved by removing Time Block/Duration columns that caused confusion
+- [x] Remove Time Block and Duration columns from session outline tables in all 24 lectures (EN + AR)
+- [x] Change all prices from JOD to USD across entire website
+- [x] Set CISM flagship course study guide price at $399 USD
+- [x] Add CISM as featured/flagship course on website
+- [x] Remove all em dashes from website code and lecture content to avoid AI detection flags
+- [ ] Create global version of website without Arabic language support for N. American/worldwide market
+- [ ] Add "Special Offer, Limited Time" pricing urgency to global site
+- [ ] Update vision/mission for worldwide audience on global site
+- [ ] Design and generate certificate of course completion PDF template
