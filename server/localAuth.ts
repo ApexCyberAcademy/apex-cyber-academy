@@ -62,8 +62,15 @@ export function registerLocalAuthRoutes(app: Express) {
   });
 
   // ─── POST /api/auth/register ──────────────────────────────────
+  // Registration is restricted to admin-invited users only.
+  // To enable open registration, set ALLOW_OPEN_REGISTRATION=true in env.
   app.post("/api/auth/register", async (req: Request, res: Response) => {
     try {
+      // Block open registration unless explicitly enabled
+      if (process.env.ALLOW_OPEN_REGISTRATION !== "true") {
+        res.status(403).json({ error: "Registration is currently by invitation only. Please contact the administrator." });
+        return;
+      }
       const { name, email, password } = req.body as { name?: string; email?: string; password?: string };
       if (!name || !email || !password) {
         res.status(400).json({ error: "Name, email and password are required" });
