@@ -315,6 +315,14 @@ export const appRouter = router({
 
   // ─── QUIZ ROUTES ──────────────────────────────────────────────────────
   quiz: router({
+    listForCourse: protectedProcedure
+      .input(z.object({ courseId: z.number() }))
+      .query(async ({ ctx, input }) => {
+        const enrollment = await db.getUserEnrollmentForCourse(ctx.user.id, input.courseId);
+        if (!enrollment) return [];
+        return db.getQuizzesByCourseId(input.courseId);
+      }),
+
     get: protectedProcedure
       .input(z.object({ quizId: z.number() }))
       .query(async ({ ctx, input }) => {
