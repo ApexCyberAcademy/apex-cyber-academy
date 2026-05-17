@@ -76,7 +76,7 @@ export default function Contact() {
     { q: "What's included in each course?", a: "Every course includes in-depth study guides, audio narrations, practice questions, hands-on activities, and a certificate of completion. Some courses also include interactive labs and simulation exercises." },
     { q: "How long do I have access to the course?", a: "Once enrolled, you have lifetime access to all course materials, lectures, labs, and practice exams. Study at your own pace with no time limits." },
     { q: "How do I take the actual certification exam?", a: "CompTIA exams are administered by Pearson VUE. You can take them at a testing center in your country or online via remote proctoring from home. ISACA CISM exams are available at PSI testing centers or online. We'll guide you through the registration process." },
-    { q: "Is there a money-back guarantee?", a: "Yes. We offer a full refund within 14 days of purchase, provided you have accessed less than 5% of the course content. See our Refund Policy page for full details." },
+    { q: "Is there a money-back guarantee?", a: "Yes. We offer a full refund within 72 hours of purchase, provided you have accessed less than 5% of the course content. See our Refund Policy page for full details." },
   ];
 
   return (
@@ -143,7 +143,7 @@ export default function Contact() {
                     ))}
                     <li className="flex items-center gap-2">
                       <div className="w-1.5 h-1.5 bg-[#D4AF37]" />
-                      <a href="/refund-policy" className="text-[#0C3C3C] font-['Work_Sans'] text-xs font-medium hover:text-[#D4AF37] transition-colors underline underline-offset-2">14-day money-back guarantee</a>
+                      <a href="/refund-policy" className="text-[#0C3C3C] font-['Work_Sans'] text-xs font-medium hover:text-[#D4AF37] transition-colors underline underline-offset-2">72-hour money-back guarantee</a>
                     </li>
                   </ul>
                 </div>

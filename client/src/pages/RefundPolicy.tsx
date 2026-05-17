@@ -1,6 +1,6 @@
 /*
   Refund Policy page — matches "Luminous Pathway" design language.
-  14-day money-back guarantee with 5% content access threshold.
+  72-hour money-back guarantee with 5% content access threshold.
 */
 
 import Navbar from "@/components/Navbar";
@@ -65,9 +65,9 @@ export default function RefundPolicy() {
                     <ShieldCheck className="w-6 h-6 text-[#D4AF37]" />
                   </div>
                   <div>
-                    <h2 className="text-[#0C3C3C] font-['Playfair_Display'] text-xl font-bold mb-2">14-Day Money-Back Guarantee</h2>
+                    <h2 className="text-[#0C3C3C] font-['Playfair_Display'] text-xl font-bold mb-2">72-Hour Money-Back Guarantee</h2>
                     <p className={paragraphClasses}>
-                      We offer a full refund within <strong>14 days</strong> of your purchase date, provided you have accessed <strong>less than 5%</strong> of the course content. This gives you enough time to explore the course structure and materials to determine if it's the right fit for you.
+                      We offer a full refund within <strong>72 hours</strong> of your purchase date, provided you have accessed <strong>less than 5%</strong> of the course content. This gives you enough time to explore the course structure and materials to determine if it's the right fit for you.
                     </p>
                   </div>
                 </div>
@@ -81,7 +81,7 @@ export default function RefundPolicy() {
                   To be eligible for a full refund, the following conditions must be met:
                 </p>
                 <ul className={listClasses}>
-                  <li>Your refund request must be submitted within <strong>14 calendar days</strong> of the original purchase date.</li>
+                  <li>Your refund request must be submitted within <strong>72 hours</strong> of the original purchase date.</li>
                   <li>You must have accessed <strong>less than 5%</strong> of the total course content (including lectures, quizzes, labs, and downloadable materials).</li>
                   <li>The request must be submitted via our Contact page or by emailing <strong>info@apexcyberacademy.org</strong>.</li>
                 </ul>
@@ -95,7 +95,7 @@ export default function RefundPolicy() {
                   Refunds will <strong>not</strong> be issued in the following cases:
                 </p>
                 <ul className={listClasses}>
-                  <li>More than 14 days have passed since the date of purchase.</li>
+                  <li>More than 72 hours have passed since the date of purchase.</li>
                   <li>You have accessed <strong>5% or more</strong> of the course content.</li>
                   <li>A certificate of completion has been issued for the course.</li>
                   <li>The purchase was made using a promotional code or voucher that explicitly states "non-refundable."</li>
