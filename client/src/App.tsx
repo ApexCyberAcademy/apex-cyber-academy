@@ -21,7 +21,6 @@ import Certificates from "./pages/Certificates";
 import Flashcards from "./pages/Flashcards";
 import VerifyCertificate from "./pages/VerifyCertificate";
 import Login from "./pages/Login";
-import EnrollmentSuccess from "./pages/EnrollmentSuccess";
 import { useEffect } from "react";
 
 function ScrollToTop() {
@@ -59,7 +58,6 @@ function Router() {
 
         {/* Auth pages */}
         <Route path={"/login"} component={Login} />
-        <Route path={"/enrollment-success"} component={EnrollmentSuccess} />
         {/* Admin pages */}
         <Route path={"/admin"} component={Admin} />
 

@@ -246,7 +246,7 @@ function MobileCard({ cert }: { cert: CertRow }) {
           </div>
 
           <a
-            href="#pricing"
+            href="/contact"
             className="block text-center py-2.5 bg-[#D4AF37] text-[#0C3C3C] font-['Montserrat'] font-bold text-xs hover:bg-[#B8962E] transition-all duration-300"
           >
             Enroll Now
@@ -424,7 +424,7 @@ export default function CertificationComparisonTable() {
                 {certs.map((cert) => (
                   <td key={cert.id} className="p-3 text-center border-r border-[#D4CBBA] last:border-r-0 bg-white/30">
                     <a
-                      href="#pricing"
+                      href="/contact"
                       className="inline-block px-4 py-2 bg-[#D4AF37] text-[#0C3C3C] font-['Montserrat'] font-bold text-[11px] hover:bg-[#B8962E] transition-all duration-300"
                     >
                       Enroll
