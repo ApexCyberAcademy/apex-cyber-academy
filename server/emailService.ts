@@ -741,3 +741,134 @@ export function previewCertificateEmail(params: {
     ? buildCertificateEmailHtmlArabic(templateParams)
     : buildCertificateEmailHtml(templateParams);
 }
+
+
+// ─── CONTACT FORM EMAIL ─────────────────────────────────────────────
+
+export type ContactFormParams = {
+  name: string;
+  email: string;
+  phone?: string;
+  interest: string;
+  message?: string;
+};
+
+function buildContactFormEmailHtml(params: ContactFormParams): string {
+  const { name, email, phone, interest, message } = params;
+
+  const interestLabels: Record<string, string> = {
+    cism: "ISACA CISM",
+    "security+": "CompTIA Security+",
+    ceh: "EC-Council CEH v13",
+    "network+": "CompTIA Network+",
+    "secai+": "CompTIA SecAI+",
+    techplus: "CompTIA Tech+",
+    bundle: "Complete Bundle - All 6 Courses",
+    partner: "Partnership Inquiry",
+    other: "Other",
+  };
+
+  const interestLabel = interestLabels[interest] || interest;
+
+  return [
+    '<!DOCTYPE html>',
+    '<html lang="en">',
+    '<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"></head>',
+    '<body style="margin:0;padding:0;background-color:#F5F0E8;font-family:\'Segoe UI\',Arial,sans-serif;">',
+    '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#F5F0E8;padding:32px 16px;">',
+    '<tr><td align="center">',
+    '<table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;">',
+
+    // Header
+    '<tr><td style="background-color:#0C3C3C;padding:24px 40px;text-align:center;">',
+    '<h1 style="margin:0;font-family:Georgia,\'Times New Roman\',serif;font-size:22px;color:#D4AF37;font-weight:700;">NEW CONTACT FORM SUBMISSION</h1>',
+    '</td></tr>',
+
+    // Body
+    '<tr><td style="background-color:#FFFFFF;padding:32px 40px;">',
+
+    // Contact details table
+    '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 24px;">',
+    '<tr><td style="padding:12px 16px;border-bottom:1px solid #E8E0D0;"><strong style="color:#0C3C3C;font-size:14px;">Name:</strong></td><td style="padding:12px 16px;border-bottom:1px solid #E8E0D0;font-size:14px;color:#444;">' + name + '</td></tr>',
+    '<tr><td style="padding:12px 16px;border-bottom:1px solid #E8E0D0;"><strong style="color:#0C3C3C;font-size:14px;">Email:</strong></td><td style="padding:12px 16px;border-bottom:1px solid #E8E0D0;font-size:14px;color:#444;"><a href="mailto:' + email + '" style="color:#0A6B5A;">' + email + '</a></td></tr>',
+    phone ? '<tr><td style="padding:12px 16px;border-bottom:1px solid #E8E0D0;"><strong style="color:#0C3C3C;font-size:14px;">Phone:</strong></td><td style="padding:12px 16px;border-bottom:1px solid #E8E0D0;font-size:14px;color:#444;">' + phone + '</td></tr>' : '',
+    '<tr><td style="padding:12px 16px;border-bottom:1px solid #E8E0D0;"><strong style="color:#0C3C3C;font-size:14px;">Interest:</strong></td><td style="padding:12px 16px;border-bottom:1px solid #E8E0D0;font-size:14px;color:#444;">' + interestLabel + '</td></tr>',
+    '</table>',
+
+    // Message section
+    message ? [
+      '<div style="padding:16px;background-color:#F9F6F0;border-left:4px solid #D4AF37;margin:0 0 24px;">',
+      '<p style="margin:0 0 8px;font-size:12px;color:#D4AF37;font-weight:700;text-transform:uppercase;letter-spacing:1px;">Message</p>',
+      '<p style="margin:0;font-size:14px;color:#444;line-height:1.7;white-space:pre-wrap;">' + message.replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</p>',
+      '</div>',
+    ].join('\n') : '',
+
+    // Reply CTA
+    '<table role="presentation" width="100%" cellpadding="0" cellspacing="0">',
+    '<tr><td align="center" style="padding:16px 0;">',
+    '<a href="mailto:' + email + '" style="display:inline-block;padding:12px 32px;background-color:#D4AF37;color:#0C3C3C;font-size:14px;font-weight:700;text-decoration:none;">REPLY TO ' + name.toUpperCase() + '</a>',
+    '</td></tr>',
+    '</table>',
+
+    '</td></tr>',
+
+    // Footer
+    '<tr><td style="background-color:#0C3C3C;padding:16px 40px;text-align:center;">',
+    '<p style="margin:0;font-size:12px;color:#A8C5C5;">This message was sent from the Apex Cyber Academy contact form.</p>',
+    '</td></tr>',
+
+    '</table>',
+    '</td></tr>',
+    '</table>',
+    '</body>',
+    '</html>',
+  ].join('\n');
+}
+
+export async function sendContactFormEmail(
+  params: ContactFormParams
+): Promise<{ success: boolean; messageId?: string; error?: string }> {
+  const client = getResend();
+  if (!client) {
+    return { success: false, error: "Email service not configured (RESEND_API_KEY missing)" };
+  }
+
+  const html = buildContactFormEmailHtml(params);
+
+  const interestLabels: Record<string, string> = {
+    cism: "CISM",
+    "security+": "Security+",
+    ceh: "CEH",
+    "network+": "Network+",
+    "secai+": "SecAI+",
+    techplus: "Tech+",
+    bundle: "Bundle",
+    partner: "Partnership",
+    other: "Other",
+  };
+
+  const interestShort = interestLabels[params.interest] || params.interest;
+  const subject = `[Contact Form] ${params.name} — ${interestShort}`;
+
+  try {
+    const result = await client.emails.send({
+      from: FROM_EMAIL,
+      to: ["info@apexcyberacademy.org"],
+      replyTo: params.email,
+      subject,
+      html,
+    });
+
+    if (result.error) {
+      console.error("[Email] Contact form send failed:", result.error);
+      return { success: false, error: result.error.message };
+    }
+
+    console.log("[Email] Contact form email sent, id:", result.data?.id);
+    return { success: true, messageId: result.data?.id };
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : String(err);
+    console.error("[Email] Exception sending contact form email:", message);
+    return { success: false, error: message };
+  }
+}

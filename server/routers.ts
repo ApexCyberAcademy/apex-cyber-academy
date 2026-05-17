@@ -5,7 +5,7 @@ import { publicProcedure, protectedProcedure, adminProcedure, router } from "./_
 import { z } from "zod";
 import * as db from "./db";
 import { checkAndIssueCredentials } from "./credentialIssuance";
-import { sendEnrollmentEmail, previewEnrollmentEmail, isEmailServiceConfigured } from "./emailService";
+import { sendEnrollmentEmail, previewEnrollmentEmail, isEmailServiceConfigured, sendContactFormEmail } from "./emailService";
 import { notifyOwner } from "./_core/notification";
 
 export const appRouter = router({
@@ -452,13 +452,6 @@ export const appRouter = router({
         return db.getBestQuizAttempt(ctx.user.id, input.quizId) ?? null;
       }),
 
-    listForCourse: protectedProcedure
-      .input(z.object({ courseId: z.number() }))
-      .query(async ({ ctx, input }) => {
-        const enrollment = await db.getUserEnrollmentForCourse(ctx.user.id, input.courseId);
-        if (!enrollment) return [];
-        return db.getQuizzesByCourseId(input.courseId);
-      }),
   }),
 
   // ─── CERTIFICATE & BADGE ROUTES ────────────────────────────────
@@ -891,6 +884,33 @@ export const appRouter = router({
       .mutation(async ({ ctx, input }) => {
         const result = await db.reviewFlashcard(input.cardId, ctx.user.id, input.quality);
         return { success: true, ...result };
+      }),
+  }),
+
+  // ─── CONTACT FORM ──────────────────────────────────────────────────
+  contact: router({
+    send: publicProcedure
+      .input(z.object({
+        name: z.string().min(1, "Name is required"),
+        email: z.string().email("Valid email is required"),
+        phone: z.string().optional(),
+        interest: z.string().min(1, "Interest selection is required"),
+        message: z.string().optional(),
+      }))
+      .mutation(async ({ input }) => {
+        const result = await sendContactFormEmail({
+          name: input.name,
+          email: input.email,
+          phone: input.phone || undefined,
+          interest: input.interest,
+          message: input.message || undefined,
+        });
+        if (!result.success) {
+          console.error("[Contact] Email send failed:", result.error);
+          // Still return success to user to avoid exposing internal errors
+          // The message is logged server-side for debugging
+        }
+        return { success: true };
       }),
   }),
 });

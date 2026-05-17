@@ -8,6 +8,7 @@ import Footer from "@/components/Footer";
 import { Mail, MapPin, Send, Clock, MessageSquare, Globe2 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
+import { trpc } from "@/lib/trpc";
 
 const PATTERN_IMG = "https://files.manuscdn.com/user_upload_by_module/session_file/310519663216536998/wPemGyWvkVyFtIcM.jpg";
 
@@ -30,10 +31,41 @@ export default function Contact() {
   const [submitted, setSubmitted] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
 
+  // Form state
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [interest, setInterest] = useState("");
+  const [message, setMessage] = useState("");
+
+  const contactMutation = trpc.contact.send.useMutation({
+    onSuccess: () => {
+      setSubmitted(true);
+      toast.success("Message sent! We'll get back to you within 24 hours.");
+    },
+    onError: (error) => {
+      toast.error(error.message || "Something went wrong. Please try again.");
+    },
+  });
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
-    toast.success("Message sent! We'll get back to you within 24 hours.");
+    contactMutation.mutate({
+      name,
+      email,
+      phone: phone || undefined,
+      interest,
+      message: message || undefined,
+    });
+  };
+
+  const handleReset = () => {
+    setSubmitted(false);
+    setName("");
+    setEmail("");
+    setPhone("");
+    setInterest("");
+    setMessage("");
   };
 
   const inputClasses = "w-full bg-white/60 border border-[#D4CBBA] text-[#0C3C3C] font-['Work_Sans'] text-sm px-4 py-3 focus:border-[#D4AF37] focus:outline-none transition-colors duration-300 placeholder:text-[#0C3C3C]/30";
@@ -123,7 +155,7 @@ export default function Contact() {
                       <Send className="w-8 h-8 text-[#D4AF37]" />
                     </div>
                     <h3 className="text-[#0C3C3C] font-['Playfair_Display'] text-2xl font-bold mb-4">Message sent! We'll get back to you within 24 hours.</h3>
-                    <button onClick={() => setSubmitted(false)} className="text-[#D4AF37] font-['Montserrat'] text-sm font-bold underline underline-offset-4 hover:text-[#B8962E] transition-colors">
+                    <button onClick={handleReset} className="text-[#D4AF37] font-['Montserrat'] text-sm font-bold underline underline-offset-4 hover:text-[#B8962E] transition-colors">
                       Send another message
                     </button>
                   </div>
@@ -132,22 +164,22 @@ export default function Contact() {
                     <div className="grid sm:grid-cols-2 gap-6 mb-6">
                       <div>
                         <label className={labelClasses}>Full Name</label>
-                        <input type="text" required placeholder="Enter your full name" className={inputClasses} />
+                        <input type="text" required placeholder="Enter your full name" className={inputClasses} value={name} onChange={(e) => setName(e.target.value)} />
                       </div>
                       <div>
                         <label className={labelClasses}>Email Address</label>
-                        <input type="email" required placeholder="your@email.com" className={inputClasses} />
+                        <input type="email" required placeholder="your@email.com" className={inputClasses} value={email} onChange={(e) => setEmail(e.target.value)} />
                       </div>
                     </div>
 
                     <div className="grid sm:grid-cols-2 gap-6 mb-6">
                       <div>
                         <label className={labelClasses}>Phone Number (Optional)</label>
-                        <input type="tel" placeholder="+1 (555) 000-0000" className={inputClasses} />
+                        <input type="tel" placeholder="+1 (555) 000-0000" className={inputClasses} value={phone} onChange={(e) => setPhone(e.target.value)} />
                       </div>
                       <div>
                         <label className={labelClasses}>I'm Interested In</label>
-                        <select required className={inputClasses}>
+                        <select required className={inputClasses} value={interest} onChange={(e) => setInterest(e.target.value)}>
                           <option value="">Select...</option>
                           <option value="cism">ISACA CISM - $299 USD (50% OFF)</option>
                           <option value="security+">CompTIA Security+ - $49 USD (40% OFF)</option>
@@ -178,12 +210,16 @@ export default function Contact() {
 
                     <div className="mb-8">
                       <label className={labelClasses}>Message (Optional)</label>
-                      <textarea rows={4} placeholder="Tell us about your goals or any questions you have..." className={`${inputClasses} resize-none`} />
+                      <textarea rows={4} placeholder="Tell us about your goals or any questions you have..." className={`${inputClasses} resize-none`} value={message} onChange={(e) => setMessage(e.target.value)} />
                     </div>
 
-                    <button type="submit" className="w-full flex items-center justify-center gap-3 py-4 bg-[#D4AF37] text-[#0C3C3C] font-['Montserrat'] font-bold text-base tracking-wide hover:bg-[#B8962E] transition-all duration-300 gold-glow-strong">
+                    <button
+                      type="submit"
+                      disabled={contactMutation.isPending}
+                      className="w-full flex items-center justify-center gap-3 py-4 bg-[#D4AF37] text-[#0C3C3C] font-['Montserrat'] font-bold text-base tracking-wide hover:bg-[#B8962E] transition-all duration-300 gold-glow-strong disabled:opacity-60 disabled:cursor-not-allowed"
+                    >
                       <Send className="w-5 h-5" />
-                      Send Message
+                      {contactMutation.isPending ? "Sending..." : "Send Message"}
                     </button>
                   </form>
                 )}
