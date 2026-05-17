@@ -369,6 +369,24 @@ function CourseCard({ course, index }: { course: CourseInfo; index: number }) {
 
 /* ============ MAIN PAGE ============ */
 
+async function handleCheckout(courseId: string) {
+  try {
+    const res = await fetch("/api/stripe/create-checkout-session", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ courseId }),
+    });
+    const data = await res.json();
+    if (data.url) {
+      window.location.href = data.url;
+    } else {
+      alert("Failed to start checkout. Please try again.");
+    }
+  } catch {
+    alert("Failed to start checkout. Please try again.");
+  }
+}
+
 export default function Course() {
   return (
     <div className="min-h-screen bg-[#001A16] overflow-x-hidden">
@@ -496,9 +514,9 @@ export default function Course() {
                       <span className="text-[#D4AF37] font-['Montserrat'] text-5xl font-extrabold text-glow">$299</span>
                       <span className="text-[#C4B9A8] font-['Work_Sans'] text-lg">USD</span>
                     </div>
-                    <a href="/contact" className="inline-block px-8 py-3 bg-[#D4AF37] text-[#001A16] font-['Montserrat'] font-bold text-sm tracking-wide hover:bg-[#B8962E] transition-all duration-300 gold-glow-strong">
+                    <button onClick={() => handleCheckout('cism')} className="inline-block px-8 py-3 bg-[#D4AF37] text-[#001A16] font-['Montserrat'] font-bold text-sm tracking-wide hover:bg-[#B8962E] transition-all duration-300 gold-glow-strong cursor-pointer">
                       Enroll Now
-                    </a>
+                    </button>
                   </div>
                   <div>
                     <ul className="grid sm:grid-cols-2 gap-2.5">
@@ -556,9 +574,9 @@ export default function Course() {
                       </li>
                     ))}
                   </ul>
-                  <a href="/contact" className="block text-center py-2.5 bg-[#D4AF37] text-[#001A16] font-['Montserrat'] font-bold text-sm hover:bg-[#B8962E] transition-all duration-300 gold-glow-strong">
+                  <button onClick={() => handleCheckout(course.id)} className="block w-full text-center py-2.5 bg-[#D4AF37] text-[#001A16] font-['Montserrat'] font-bold text-sm hover:bg-[#B8962E] transition-all duration-300 gold-glow-strong cursor-pointer">
                     Enroll Now
-                  </a>
+                  </button>
                 </div>
               </FadeInSection>
             ))}
@@ -576,9 +594,9 @@ export default function Course() {
                   <span className="text-[#C4B9A8] font-['Work_Sans'] text-sm">USD</span>
                   <span className="px-2 py-1 bg-red-500/20 border border-red-500/40 text-red-400 font-['Montserrat'] text-[10px] font-bold tracking-wider">SAVE $466</span>
                 </div>
-                <a href="/contact" className="inline-block px-8 py-3 bg-[#D4AF37] text-[#001A16] font-['Montserrat'] font-bold text-sm tracking-wide hover:bg-[#B8962E] transition-all duration-300 gold-glow">
+                <button onClick={() => handleCheckout('bundle')} className="inline-block px-8 py-3 bg-[#D4AF37] text-[#001A16] font-['Montserrat'] font-bold text-sm tracking-wide hover:bg-[#B8962E] transition-all duration-300 gold-glow cursor-pointer">
                   Get the Complete Bundle
-                </a>
+                </button>
               </div>
             </div>
           </FadeInSection>
@@ -599,7 +617,7 @@ export default function Course() {
               <p className="text-[#C4B9A8] font-['Work_Sans'] text-lg leading-relaxed mb-10">
                 Start learning today with our self-paced courses. Comprehensive study guides, interactive labs, and practice exams - all at your own pace.
               </p>
-              <a href="/contact" className="inline-flex items-center gap-3 px-10 py-5 bg-[#D4AF37] text-[#001A16] font-['Montserrat'] font-bold text-lg tracking-wide hover:bg-[#B8962E] transition-all duration-300 gold-glow-strong">
+              <a href="#pricing" className="inline-flex items-center gap-3 px-10 py-5 bg-[#D4AF37] text-[#001A16] font-['Montserrat'] font-bold text-lg tracking-wide hover:bg-[#B8962E] transition-all duration-300 gold-glow-strong">
                 Enroll Now
                 <ArrowRight className="w-5 h-5" />
               </a>

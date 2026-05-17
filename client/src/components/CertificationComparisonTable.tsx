@@ -194,7 +194,7 @@ function MobileCard({ cert }: { cert: CertRow }) {
         </div>
         <div className="flex-1">
           <div className="flex items-center gap-2">
-            <h4 className="font-['Montserrat'] text-sm font-bold text-[#0C3C3C]">{cert.name}</h4>
+            <h4 className="font-['Montserrat'] text-sm font-bold text-white">{cert.name}</h4>
             {cert.isNew && (
               <span className="px-1.5 py-0.5 bg-[#D4AF37] text-[#0C3C3C] font-['Montserrat'] text-[9px] font-bold tracking-wider">NEW</span>
             )}
@@ -211,38 +211,38 @@ function MobileCard({ cert }: { cert: CertRow }) {
         <div className="px-4 pb-4 space-y-3 border-t border-[#D4CBBA]">
           <div className="pt-3 grid grid-cols-2 gap-3">
             <div>
-              <span className="text-[#0C3C3C]/60 font-['Montserrat'] text-[10px] uppercase tracking-wider">Level</span>
-              <p className="text-[#0C3C3C] font-['Montserrat'] text-xs font-bold mt-0.5">{cert.level}</p>
+              <span className="text-white/60 font-['Montserrat'] text-[10px] uppercase tracking-wider">Level</span>
+              <p className="text-white font-['Montserrat'] text-xs font-bold mt-0.5">{cert.level}</p>
               <LevelBar level={cert.levelNum} />
             </div>
             <div>
-              <span className="text-[#0C3C3C]/60 font-['Montserrat'] text-[10px] uppercase tracking-wider">Vendor</span>
-              <p className="text-[#0C3C3C] font-['Montserrat'] text-xs font-bold mt-0.5">{cert.vendor}</p>
+              <span className="text-white/60 font-['Montserrat'] text-[10px] uppercase tracking-wider">Vendor</span>
+              <p className="text-white font-['Montserrat'] text-xs font-bold mt-0.5">{cert.vendor}</p>
             </div>
             <div>
-              <span className="text-[#0C3C3C]/60 font-['Montserrat'] text-[10px] uppercase tracking-wider">Sessions</span>
-              <p className="text-[#0C3C3C] font-['Montserrat'] text-xs font-bold mt-0.5">{cert.sessions}</p>
+              <span className="text-white/60 font-['Montserrat'] text-[10px] uppercase tracking-wider">Sessions</span>
+              <p className="text-white font-['Montserrat'] text-xs font-bold mt-0.5">{cert.sessions}</p>
             </div>
             <div>
-              <span className="text-[#0C3C3C]/60 font-['Montserrat'] text-[10px] uppercase tracking-wider">Hours</span>
-              <p className="text-[#0C3C3C] font-['Montserrat'] text-xs font-bold mt-0.5">{cert.hours}</p>
+              <span className="text-white/60 font-['Montserrat'] text-[10px] uppercase tracking-wider">Hours</span>
+              <p className="text-white font-['Montserrat'] text-xs font-bold mt-0.5">{cert.hours}</p>
             </div>
 
           </div>
 
           <div>
-            <span className="text-[#0C3C3C]/60 font-['Montserrat'] text-[10px] uppercase tracking-wider">Prerequisites</span>
-            <p className="text-[#0C3C3C] font-['Work_Sans'] text-xs mt-0.5">{cert.prereqs}</p>
+            <span className="text-white/60 font-['Montserrat'] text-[10px] uppercase tracking-wider">Prerequisites</span>
+            <p className="text-white font-['Work_Sans'] text-xs mt-0.5">{cert.prereqs}</p>
           </div>
 
           <div>
-            <span className="text-[#0C3C3C]/60 font-['Montserrat'] text-[10px] uppercase tracking-wider">Career Path</span>
+            <span className="text-white/60 font-['Montserrat'] text-[10px] uppercase tracking-wider">Career Path</span>
             <p className="text-[#D4AF37] font-['Work_Sans'] text-xs font-semibold mt-0.5">{cert.careerPath}</p>
           </div>
 
           <div>
-            <span className="text-[#0C3C3C]/60 font-['Montserrat'] text-[10px] uppercase tracking-wider">Best For</span>
-            <p className="text-[#0C3C3C] font-['Work_Sans'] text-xs mt-0.5">{cert.bestFor}</p>
+            <span className="text-white/60 font-['Montserrat'] text-[10px] uppercase tracking-wider">Best For</span>
+            <p className="text-white font-['Work_Sans'] text-xs mt-0.5">{cert.bestFor}</p>
           </div>
 
           <a
@@ -269,10 +269,10 @@ export default function CertificationComparisonTable() {
             <Target className="w-3.5 h-3.5 inline-block me-2 -mt-0.5" />
             Decision Guide
           </span>
-          <h2 className="text-[#0C3C3C] font-['Playfair_Display'] text-4xl sm:text-5xl font-bold mb-4">
+          <h2 className="text-[#F5F0E8] font-['Playfair_Display'] text-4xl sm:text-5xl font-bold mb-4">
             Compare Certifications
           </h2>
-          <p className="text-[#0C3C3C] font-['Work_Sans'] text-lg max-w-2xl mx-auto">
+          <p className="text-[#F5F0E8]/80 font-['Work_Sans'] text-lg max-w-2xl mx-auto">
             Find the right certification for your career stage and goals.
           </p>
         </div>
@@ -280,11 +280,11 @@ export default function CertificationComparisonTable() {
         {/* ===== LEARNING PATH VISUAL ===== */}
         <div className="mb-16 max-w-6xl mx-auto">
           <div className="text-center mb-6">
-            <h3 className="text-[#0C3C3C] font-['Montserrat'] text-sm font-bold tracking-wider uppercase">
+            <h3 className="text-[#F5F0E8] font-['Montserrat'] text-sm font-bold tracking-wider uppercase">
               <TrendingUp className="w-4 h-4 inline-block me-2 -mt-0.5 text-[#D4AF37]" />
               Suggested Learning Path
             </h3>
-            <p className="text-[#0C3C3C]/70 font-['Work_Sans'] text-xs mt-1">Start from the left and progress right based on your experience level.</p>
+            <p className="text-[#F5F0E8]/70 font-['Work_Sans'] text-xs mt-1">Start from the left and progress right based on your experience level.</p>
           </div>
           <div className="relative hidden lg:block">
             <div className="absolute top-1/2 left-[8%] right-[8%] h-[2px] bg-gradient-to-r from-[#D4CBBA] via-[#D4AF37] to-[#D4AF37] -translate-y-1/2 z-0" />
@@ -296,10 +296,10 @@ export default function CertificationComparisonTable() {
                     <div className="w-12 h-12 flex items-center justify-center bg-[#F5F0E8] border-2 border-[#D4AF37] mb-2">
                       <Icon className="w-5 h-5 text-[#D4AF37]" />
                     </div>
-                    <span className="text-[#0C3C3C] font-['Montserrat'] text-[10px] font-bold text-center leading-tight">{cert.name}</span>
+                    <span className="text-[#F5F0E8] font-['Montserrat'] text-[10px] font-bold text-center leading-tight">{cert.name}</span>
                     <span className="text-[#D4AF37] font-['Montserrat'] text-[9px] font-semibold">{cert.code}</span>
                     <LevelBar level={cert.levelNum} />
-                    <span className="text-[#0C3C3C]/60 font-['Work_Sans'] text-[9px] mt-0.5">{cert.level}</span>
+                    <span className="text-[#F5F0E8]/60 font-['Work_Sans'] text-[9px] mt-0.5">{cert.level}</span>
                   </div>
                 );
               })}
@@ -343,7 +343,7 @@ export default function CertificationComparisonTable() {
                 </td>
                 {certs.map((cert) => (
                   <td key={cert.id} className="p-3 text-center border-r border-[#D4CBBA] last:border-r-0 bg-white/30">
-                    <span className="text-[#0C3C3C] font-['Montserrat'] text-xs font-bold block mb-1">{cert.level}</span>
+                    <span className="text-white font-['Montserrat'] text-xs font-bold block mb-1">{cert.level}</span>
                     <div className="flex justify-center"><LevelBar level={cert.levelNum} /></div>
                   </td>
                 ))}
@@ -357,7 +357,7 @@ export default function CertificationComparisonTable() {
                 </td>
                 {certs.map((cert) => (
                   <td key={cert.id} className="p-3 text-center border-r border-[#D4CBBA] last:border-r-0 bg-white/30">
-                    <span className="text-[#0C3C3C] font-['Work_Sans'] text-[11px] leading-tight">{cert.prereqs}</span>
+                    <span className="text-white font-['Work_Sans'] text-[11px] leading-tight">{cert.prereqs}</span>
                   </td>
                 ))}
               </tr>
@@ -371,8 +371,8 @@ export default function CertificationComparisonTable() {
                 {certs.map((cert) => (
                   <td key={cert.id} className="p-3 text-center border-r border-[#D4CBBA] last:border-r-0 bg-white/30">
                     <span className="text-[#D4AF37] font-['Montserrat'] text-sm font-extrabold">{cert.sessions}</span>
-                    <span className="text-[#0C3C3C] font-['Work_Sans'] text-[10px] block">sessions</span>
-                    <span className="text-[#0C3C3C]/60 font-['Montserrat'] text-[10px]">{cert.hours} hrs · {cert.domains} domains</span>
+                    <span className="text-white font-['Work_Sans'] text-[10px] block">sessions</span>
+                    <span className="text-white/60 font-['Montserrat'] text-[10px]">{cert.hours} hrs · {cert.domains} domains</span>
                   </td>
                 ))}
               </tr>
@@ -387,7 +387,7 @@ export default function CertificationComparisonTable() {
                 </td>
                 {certs.map((cert) => (
                   <td key={cert.id} className="p-3 text-center border-r border-[#D4CBBA] last:border-r-0 bg-white/30">
-                    <span className="text-[#0C3C3C] font-['Work_Sans'] text-[10px] leading-tight">{cert.careerPath}</span>
+                    <span className="text-white font-['Work_Sans'] text-[10px] leading-tight">{cert.careerPath}</span>
                   </td>
                 ))}
               </tr>
@@ -400,7 +400,7 @@ export default function CertificationComparisonTable() {
                 </td>
                 {certs.map((cert) => (
                   <td key={cert.id} className="p-3 text-center border-r border-[#D4CBBA] last:border-r-0 bg-white/30">
-                    <span className="text-[#0C3C3C] font-['Work_Sans'] text-[11px] font-semibold italic">{cert.bestFor}</span>
+                    <span className="text-white font-['Work_Sans'] text-[11px] font-semibold italic">{cert.bestFor}</span>
                   </td>
                 ))}
               </tr>
@@ -413,7 +413,7 @@ export default function CertificationComparisonTable() {
                 {certs.map((cert) => (
                   <td key={cert.id} className="p-3 text-center border-r border-[#D4CBBA] last:border-r-0 bg-white/30">
                     <span className="text-[#D4AF37] font-['Montserrat'] text-xl font-extrabold">${cert.price}</span>
-                    <span className="text-[#0C3C3C]/50 font-['Work_Sans'] text-[10px] block">USD</span>
+                    <span className="text-white/50 font-['Work_Sans'] text-[10px] block">USD</span>
                   </td>
                 ))}
               </tr>
