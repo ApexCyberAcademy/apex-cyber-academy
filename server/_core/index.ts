@@ -6,6 +6,7 @@ import { createExpressMiddleware } from "@trpc/server/adapters/express";
 import { registerOAuthRoutes } from "./oauth";
 import { registerLocalAuthRoutes } from "../localAuth";
 import { registerPreviewRoutes } from "../previewAuth";
+import { registerStripeRoutes } from "../stripe";
 import { appRouter } from "../routers";
 import { createContext } from "./context";
 import { serveStatic, setupVite } from "./vite";
@@ -32,11 +33,15 @@ async function findAvailablePort(startPort: number = 3000): Promise<number> {
 async function startServer() {
   const app = express();
   const server = createServer(app);
+  // Raw body capture for Stripe webhook signature verification
+  app.use("/api/stripe/webhook", express.raw({ type: "application/json" }));
   // Configure body parser with larger size limit for file uploads
   app.use(express.json({ limit: "50mb" }));
   app.use(express.urlencoded({ limit: "50mb", extended: true }));
   // OAuth callback under /api/oauth/callback
   registerOAuthRoutes(app);
+  // Stripe checkout and webhook routes
+  registerStripeRoutes(app);
   registerLocalAuthRoutes(app);
   // Preview mode (demo student login) - controlled by VITE_PREVIEW_MODE env
   registerPreviewRoutes(app);

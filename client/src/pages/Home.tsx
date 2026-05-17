@@ -74,6 +74,31 @@ function FadeInSection({ children, className = "", delay = 0 }: { children: Reac
 }
 
 export default function Home() {
+  const [checkoutLoading, setCheckoutLoading] = useState<string | null>(null);
+
+  async function handleCheckout(courseSlug: string) {
+    setCheckoutLoading(courseSlug);
+    try {
+      const isBundle = courseSlug === 'bundle';
+      const response = await fetch('/api/stripe/create-checkout-session', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(isBundle ? { bundleSlug: 'ceh-secplus-bundle' } : { courseSlug }),
+      });
+      const data = await response.json();
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        alert(data.error || 'Failed to start checkout. Please try again.');
+      }
+    } catch (err) {
+      console.error('Checkout error:', err);
+      alert('Something went wrong. Please try again.');
+    } finally {
+      setCheckoutLoading(null);
+    }
+  }
+
   return (
     <div className="min-h-screen bg-[#F5F0E8] overflow-x-hidden">
       <Navbar />
@@ -402,9 +427,9 @@ export default function Home() {
                       <span className="text-[#D4AF37] font-['Montserrat'] text-5xl font-extrabold text-glow">$399</span>
                       <span className="text-[#0C3C3C] font-['Work_Sans'] text-lg font-medium ms-2">USD</span>
                     </div>
-                    <a href="/contact" className="inline-block px-8 py-3 bg-[#D4AF37] text-[#0C3C3C] font-['Montserrat'] font-bold text-sm tracking-wide hover:bg-[#B8962E] transition-all duration-300 gold-glow-strong">
+                    <button onClick={() => handleCheckout('cism')} className="inline-block px-8 py-3 bg-[#D4AF37] text-[#0C3C3C] font-['Montserrat'] font-bold text-sm tracking-wide hover:bg-[#B8962E] transition-all duration-300 gold-glow-strong cursor-pointer">
                       Enroll Now
-                    </a>
+                    </button>
                   </div>
                   <div>
                     <ul className="grid sm:grid-cols-2 gap-2.5">
@@ -442,7 +467,7 @@ export default function Home() {
                     </li>
                   ))}
                 </ul>
-                <a href="/contact" className="block text-center py-3 border border-[#D4AF37]/50 text-[#D4AF37] font-['Montserrat'] font-bold text-sm hover:bg-[#D4AF37]/10 transition-all duration-300">Enroll Now</a>
+                <button onClick={() => handleCheckout('security-plus-sy0-701')} className="block w-full text-center py-3 border border-[#D4AF37]/50 text-[#D4AF37] font-['Montserrat'] font-bold text-sm hover:bg-[#D4AF37]/10 transition-all duration-300 cursor-pointer">Enroll Now</button>
               </div>
             </FadeInSection>
 
@@ -467,7 +492,7 @@ export default function Home() {
                     </li>
                   ))}
                 </ul>
-                <a href="/contact" className="block text-center py-3 border border-[#D4AF37]/50 text-[#D4AF37] font-['Montserrat'] font-bold text-sm hover:bg-[#D4AF37]/10 transition-all duration-300">Enroll Now</a>
+                <button onClick={() => handleCheckout('ceh-v13')} className="block w-full text-center py-3 border border-[#D4AF37]/50 text-[#D4AF37] font-['Montserrat'] font-bold text-sm hover:bg-[#D4AF37]/10 transition-all duration-300 cursor-pointer">Enroll Now</button>
               </div>
             </FadeInSection>
 
@@ -491,7 +516,7 @@ export default function Home() {
                     </li>
                   ))}
                 </ul>
-                <a href="/contact" className="block text-center py-3 border border-[#D4AF37]/50 text-[#D4AF37] font-['Montserrat'] font-bold text-sm hover:bg-[#D4AF37]/10 transition-all duration-300">Enroll Now</a>
+                <button onClick={() => handleCheckout('secai-plus-cy0-001')} className="block w-full text-center py-3 border border-[#D4AF37]/50 text-[#D4AF37] font-['Montserrat'] font-bold text-sm hover:bg-[#D4AF37]/10 transition-all duration-300 cursor-pointer">Enroll Now</button>
               </div>
             </FadeInSection>
 
@@ -516,7 +541,7 @@ export default function Home() {
                     </li>
                   ))}
                 </ul>
-                <a href="/contact" className="block text-center py-3 border border-[#D4AF37]/50 text-[#D4AF37] font-['Montserrat'] font-bold text-sm hover:bg-[#D4AF37]/10 transition-all duration-300">Enroll Now</a>
+                <button onClick={() => handleCheckout('network-plus-n10-009')} className="block w-full text-center py-3 border border-[#D4AF37]/50 text-[#D4AF37] font-['Montserrat'] font-bold text-sm hover:bg-[#D4AF37]/10 transition-all duration-300 cursor-pointer">Enroll Now</button>
               </div>
             </FadeInSection>
 
@@ -540,7 +565,7 @@ export default function Home() {
                     </li>
                   ))}
                 </ul>
-                <a href="/contact" className="block text-center py-3 border border-[#D4AF37]/50 text-[#D4AF37] font-['Montserrat'] font-bold text-sm hover:bg-[#D4AF37]/10 transition-all duration-300">Enroll Now</a>
+                <button onClick={() => handleCheckout('tech-plus-fc0-u71')} className="block w-full text-center py-3 border border-[#D4AF37]/50 text-[#D4AF37] font-['Montserrat'] font-bold text-sm hover:bg-[#D4AF37]/10 transition-all duration-300 cursor-pointer">Enroll Now</button>
               </div>
             </FadeInSection>
 
@@ -567,7 +592,7 @@ export default function Home() {
                     </li>
                   ))}
                 </ul>
-                <a href="/contact" className="block text-center py-3 bg-[#D4AF37] text-[#0C3C3C] font-['Montserrat'] font-bold text-sm hover:bg-[#B8962E] transition-all duration-300">Get the Bundle</a>
+                <button onClick={() => handleCheckout('bundle')} className="block w-full text-center py-3 bg-[#D4AF37] text-[#0C3C3C] font-['Montserrat'] font-bold text-sm hover:bg-[#B8962E] transition-all duration-300 cursor-pointer">Get the Bundle</button>
               </div>
             </FadeInSection>
           </div>
@@ -620,7 +645,7 @@ export default function Home() {
                 Join professionals worldwide who are advancing their cybersecurity careers with Apex Cyber Academy.
               </p>
               <a
-                href="/contact"
+                href="/course"
                 className="inline-flex items-center gap-3 px-10 py-5 bg-[#D4AF37] text-[#0C3C3C] font-['Montserrat'] font-bold text-lg tracking-wide hover:bg-[#B8962E] transition-all duration-300 gold-glow-strong"
               >
                 Enroll Now
