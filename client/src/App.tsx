@@ -22,6 +22,7 @@ import Flashcards from "./pages/Flashcards";
 import VerifyCertificate from "./pages/VerifyCertificate";
 import Login from "./pages/Login";
 import EnrollmentSuccess from "./pages/EnrollmentSuccess";
+import RefundPolicy from "./pages/RefundPolicy";
 import { useEffect } from "react";
 
 function ScrollToTop() {
@@ -42,6 +43,7 @@ function Router() {
         <Route path={"/about"} component={About} />
         <Route path={"/course"} component={Course} />
         <Route path={"/contact"} component={Contact} />
+        <Route path={"/refund-policy"} component={RefundPolicy} />
 
         {/* Student LMS pages */}
         <Route path={"/dashboard"} component={Dashboard} />

@@ -29,6 +29,7 @@ export default function Footer() {
               <a href="/course" className="block text-[#0C3C3C] hover:text-[#D4AF37] font-['Work_Sans'] text-sm font-medium transition-colors duration-300">Courses</a>
               <a href="/about" className="block text-[#0C3C3C] hover:text-[#D4AF37] font-['Work_Sans'] text-sm font-medium transition-colors duration-300">About</a>
               <a href="/contact" className="block text-[#0C3C3C] hover:text-[#D4AF37] font-['Work_Sans'] text-sm font-medium transition-colors duration-300">Contact</a>
+              <a href="/refund-policy" className="block text-[#0C3C3C] hover:text-[#D4AF37] font-['Work_Sans'] text-sm font-medium transition-colors duration-300">Refund Policy</a>
             </div>
           </div>
 
