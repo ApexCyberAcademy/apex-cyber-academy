@@ -1,12 +1,15 @@
 /**
  * Stripe Checkout Integration
- * Handles checkout session creation and webhook for auto-enrollment
+ * Handles checkout session creation, session verification, account creation after payment,
+ * and webhook for fallback auto-enrollment.
  */
 import { Express, Request, Response } from "express";
 import Stripe from "stripe";
 import crypto from "crypto";
-import { getCourseBySlug, getUserByEmail, createEnrollment, getUserEnrollmentForCourse, getDb } from "./db";
-import { users } from "../drizzle/schema";
+import { COOKIE_NAME, ONE_YEAR_MS } from "@shared/const";
+import { getSessionCookieOptions } from "./_core/cookies";
+import { sdk } from "./_core/sdk";
+import { getCourseBySlug, getUserByEmail, createEnrollment, getUserEnrollmentForCourse, getDb, upsertUser, getUserByOpenId } from "./db";
 
 const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY || "";
 const STRIPE_WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET || "";
@@ -59,7 +62,7 @@ export function registerStripeRoutes(app: Express) {
 
   const stripe = new Stripe(STRIPE_SECRET_KEY);
 
-  // Create checkout session
+  // ─── Create checkout session ─────────────────────────────────────
   app.post("/api/stripe/create-checkout-session", async (req: Request, res: Response) => {
     try {
       const { courseId } = req.body;
@@ -98,7 +101,7 @@ export function registerStripeRoutes(app: Express) {
     }
   });
 
-  // Get session status (called by success page)
+  // ─── Verify session (called by success page to get email + course info) ───
   app.get("/api/stripe/session-status", async (req: Request, res: Response) => {
     try {
       const sessionId = req.query.session_id as string;
@@ -119,14 +122,15 @@ export function registerStripeRoutes(app: Express) {
         return res.json({ status: "paid", error: "Missing email or course info" });
       }
 
-      // Try to create account and enroll
-      const result = await enrollUserAfterPayment(email, courseId);
+      // Check if user already exists (returning customer)
+      const existingUser = await getUserByEmail(email.toLowerCase().trim());
 
       res.json({
         status: "paid",
-        email,
+        email: email.toLowerCase().trim(),
+        courseId,
         courseName: COURSE_NAMES[courseId],
-        ...result,
+        accountExists: !!existingUser,
       });
     } catch (error: any) {
       console.error("[Stripe] Session status error:", error.message);
@@ -134,7 +138,90 @@ export function registerStripeRoutes(app: Express) {
     }
   });
 
-  // Webhook handler (raw body is passed by express.raw middleware)
+  // ─── Create account after payment (user sets their own password) ───
+  app.post("/api/stripe/create-account", async (req: Request, res: Response) => {
+    try {
+      const { sessionId, password } = req.body as { sessionId?: string; password?: string };
+
+      if (!sessionId || !password) {
+        return res.status(400).json({ error: "Session ID and password are required" });
+      }
+
+      if (password.length < 8) {
+        return res.status(400).json({ error: "Password must be at least 8 characters" });
+      }
+
+      // Verify with Stripe that this session was actually paid
+      const session = await stripe.checkout.sessions.retrieve(sessionId);
+
+      if (session.payment_status !== "paid") {
+        return res.status(400).json({ error: "Payment not confirmed" });
+      }
+
+      const email = session.customer_details?.email?.toLowerCase().trim();
+      const courseId = session.metadata?.courseId;
+
+      if (!email || !courseId) {
+        return res.status(400).json({ error: "Missing payment details" });
+      }
+
+      const db = await getDb();
+      if (!db) {
+        return res.status(500).json({ error: "Database unavailable" });
+      }
+
+      // Check if user already exists
+      let user = await getUserByEmail(email);
+
+      if (!user) {
+        // Create new user with their chosen password
+        const openId = `local-${crypto.createHash("sha256").update(email).digest("hex").slice(0, 32)}`;
+        const passwordHash = hashPassword(password);
+
+        await upsertUser({
+          openId,
+          name: email.split("@")[0],
+          email,
+          passwordHash,
+          loginMethod: "email",
+          lastSignedIn: new Date(),
+        });
+
+        user = await getUserByOpenId(openId);
+      } else {
+        // User already exists — update their password to the one they just set
+        // (they may have had a temp password from webhook fallback)
+        const passwordHash = hashPassword(password);
+        await upsertUser({ openId: user.openId, passwordHash, lastSignedIn: new Date() });
+      }
+
+      if (!user) {
+        return res.status(500).json({ error: "Failed to create account" });
+      }
+
+      // Enroll in course(s)
+      await enrollUser(user.id, courseId);
+
+      // Create session token and set cookie (auto-login)
+      const sessionToken = await sdk.createSessionToken(user.openId, {
+        name: user.name || email.split("@")[0],
+        expiresInMs: ONE_YEAR_MS,
+      });
+
+      const cookieOptions = getSessionCookieOptions(req);
+      res.cookie(COOKIE_NAME, sessionToken, { ...cookieOptions, maxAge: ONE_YEAR_MS });
+
+      res.json({
+        success: true,
+        user: { id: user.id, name: user.name, email: user.email, role: user.role },
+      });
+    } catch (error: any) {
+      console.error("[Stripe] Create account error:", error.message);
+      res.status(500).json({ error: "Failed to create account" });
+    }
+  });
+
+  // ─── Webhook handler (fallback — creates account if user closes tab) ───
   app.post("/api/stripe/webhook", async (req: Request, res: Response) => {
     try {
       const sig = req.headers["stripe-signature"] as string;
@@ -146,12 +233,36 @@ export function registerStripeRoutes(app: Express) {
 
       if (event.type === "checkout.session.completed") {
         const session = event.data.object as Stripe.Checkout.Session;
-        const email = session.customer_details?.email;
+        const email = session.customer_details?.email?.toLowerCase().trim();
         const courseId = session.metadata?.courseId;
 
         if (email && courseId) {
-          await enrollUserAfterPayment(email, courseId);
-          console.log(`[Stripe] Enrolled ${email} in ${courseId}`);
+          // Only create account if user hasn't already set up via the success page
+          let user = await getUserByEmail(email);
+
+          if (!user) {
+            // User closed the tab — create with temp password as fallback
+            const tempPassword = generateTempPassword();
+            const openId = `local-${crypto.createHash("sha256").update(email).digest("hex").slice(0, 32)}`;
+            const passwordHash = hashPassword(tempPassword);
+
+            await upsertUser({
+              openId,
+              name: email.split("@")[0],
+              email,
+              passwordHash,
+              loginMethod: "email",
+              lastSignedIn: new Date(),
+            });
+
+            user = await getUserByOpenId(openId);
+            console.log(`[Stripe Webhook] Created fallback account for ${email}`);
+          }
+
+          if (user) {
+            await enrollUser(user.id, courseId);
+            console.log(`[Stripe Webhook] Enrolled ${email} in ${courseId}`);
+          }
         }
       }
 
@@ -163,66 +274,31 @@ export function registerStripeRoutes(app: Express) {
   });
 }
 
-async function enrollUserAfterPayment(email: string, courseId: string): Promise<{ tempPassword?: string; enrolled: boolean }> {
-  const db = await getDb();
-  if (!db) return { enrolled: false };
-
-  try {
-    // Check if user already exists
-    let user = await getUserByEmail(email);
-    let tempPassword: string | undefined;
-
-    if (!user) {
-      // Create new user with temp password
-      tempPassword = generateTempPassword();
-      const passwordHash = hashPassword(tempPassword);
-      const openId = `local_${crypto.randomUUID()}`;
-
-      await db.insert(users).values({
-        openId,
-        email,
-        name: email.split("@")[0],
-        loginMethod: "local",
-        passwordHash,
-        role: "user",
-      });
-
-      user = await getUserByEmail(email);
-    }
-
-    if (!user) return { enrolled: false };
-
-    // Enroll in course(s)
-    if (courseId === "bundle") {
-      // Enroll in all courses
-      const allSlugs = Object.values(COURSE_SLUG_MAP);
-      for (const slug of allSlugs) {
-        const course = await getCourseBySlug(slug);
-        if (course) {
-          const existing = await getUserEnrollmentForCourse(user.id, course.id);
-          if (!existing) {
-            await createEnrollment({ userId: user.id, courseId: course.id, tier: "self_paced", status: "active" });
-          }
-        }
-      }
-    } else {
-      const dbSlug = COURSE_SLUG_MAP[courseId];
-      if (dbSlug) {
-        const course = await getCourseBySlug(dbSlug);
-        if (course) {
-          const existing = await getUserEnrollmentForCourse(user.id, course.id);
-          if (!existing) {
-            await createEnrollment({ userId: user.id, courseId: course.id, tier: "self_paced", status: "active" });
-          }
-        } else {
-          console.warn(`[Stripe] Course not found for slug: ${dbSlug}`);
+// ─── Helper: Enroll user in course(s) ───────────────────────────────
+async function enrollUser(userId: number, courseId: string): Promise<void> {
+  if (courseId === "bundle") {
+    const allSlugs = Object.values(COURSE_SLUG_MAP);
+    for (const slug of allSlugs) {
+      const course = await getCourseBySlug(slug);
+      if (course) {
+        const existing = await getUserEnrollmentForCourse(userId, course.id);
+        if (!existing) {
+          await createEnrollment({ userId, courseId: course.id, tier: "self_paced", status: "active" });
         }
       }
     }
-
-    return { tempPassword, enrolled: true };
-  } catch (error: any) {
-    console.error("[Stripe] Enrollment error:", error.message);
-    return { enrolled: false };
+  } else {
+    const dbSlug = COURSE_SLUG_MAP[courseId];
+    if (dbSlug) {
+      const course = await getCourseBySlug(dbSlug);
+      if (course) {
+        const existing = await getUserEnrollmentForCourse(userId, course.id);
+        if (!existing) {
+          await createEnrollment({ userId, courseId: course.id, tier: "self_paced", status: "active" });
+        }
+      } else {
+        console.warn(`[Stripe] Course not found for slug: ${dbSlug}`);
+      }
+    }
   }
 }

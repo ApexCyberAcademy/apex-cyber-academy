@@ -23,7 +23,7 @@ function parseDbUrl(url) {
     user: u.username,
     password: u.password,
     database: u.pathname.slice(1),
-    ssl: { rejectUnauthorized: true },
+    ssl: { rejectUnauthorized: false },
   };
 }
 
@@ -81,8 +81,8 @@ async function main() {
 
       for (const lec of mod.lectures) {
         const [lecResult] = await conn.execute(
-          `INSERT INTO lectures (moduleId, courseId, title, slug, content, studyGuideContent, glossaryContent, arabicContent, audioUrl, study_sheet_en_url, durationMinutes, objectives, sortOrder)
-           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+          `INSERT INTO lectures (moduleId, courseId, title, slug, content, studyGuideContent, glossaryContent, arabicContent, audioUrl, durationMinutes, objectives, sortOrder)
+           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
           [
             moduleId,
             courseId,
@@ -93,7 +93,6 @@ async function main() {
             lec.glossaryContent || null,
             null, // arabicContent - not included for CEH
             lec.audioUrl || null,
-            lec.studySheetEnUrl || null,
             lec.durationMinutes || null,
             lec.objectives || null,
             lec.sortOrder || 0,

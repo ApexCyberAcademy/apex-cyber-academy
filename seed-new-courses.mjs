@@ -23,7 +23,7 @@ function parseDbUrl(url) {
     user: u.username,
     password: u.password,
     database: u.pathname.slice(1),
-    ssl: { rejectUnauthorized: true },
+    ssl: { rejectUnauthorized: false },
   };
 }
 
