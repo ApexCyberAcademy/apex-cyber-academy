@@ -427,7 +427,7 @@ export default function Home() {
                       <span className="text-[#D4AF37] font-['Montserrat'] text-5xl font-extrabold text-glow">$399</span>
                       <span className="text-[#0C3C3C] font-['Work_Sans'] text-lg font-medium ms-2">USD</span>
                     </div>
-                    <button onClick={() => handleCheckout('cism')} className="inline-block px-8 py-3 bg-[#D4AF37] text-[#0C3C3C] font-['Montserrat'] font-bold text-sm tracking-wide hover:bg-[#B8962E] transition-all duration-300 gold-glow-strong cursor-pointer">
+                    <button onClick={() => handleCheckout('cism-certified-information-security-manager')} className="inline-block px-8 py-3 bg-[#D4AF37] text-[#0C3C3C] font-['Montserrat'] font-bold text-sm tracking-wide hover:bg-[#B8962E] transition-all duration-300 gold-glow-strong cursor-pointer">
                       Enroll Now
                     </button>
                   </div>
@@ -492,7 +492,7 @@ export default function Home() {
                     </li>
                   ))}
                 </ul>
-                <button onClick={() => handleCheckout('ceh-v13')} className="block w-full text-center py-3 border border-[#D4AF37]/50 text-[#D4AF37] font-['Montserrat'] font-bold text-sm hover:bg-[#D4AF37]/10 transition-all duration-300 cursor-pointer">Enroll Now</button>
+                <button onClick={() => handleCheckout('ceh-certified-ethical-hacker')} className="block w-full text-center py-3 border border-[#D4AF37]/50 text-[#D4AF37] font-['Montserrat'] font-bold text-sm hover:bg-[#D4AF37]/10 transition-all duration-300 cursor-pointer">Enroll Now</button>
               </div>
             </FadeInSection>
 

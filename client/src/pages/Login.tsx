@@ -120,15 +120,17 @@ export default function Login() {
                 Email Address
               </Label>
               <Input
-                id="email"
-                name="email"
-                type="email"
-                placeholder="you@example.com"
-                value={form.email}
-                onChange={handleChange}
-                required
-                className="border-[#D4CBBA] focus:border-[#0C3C3C] bg-white"
-              />
+                  id="email"
+                  name="email"
+                  type="email"
+                  placeholder="you@example.com"
+                  value={form.email}
+                  onChange={handleChange}
+                  onFocus={(e) => e.target.removeAttribute('readonly')}
+                  required
+                  autoComplete="off"
+                  className="border-[#D4CBBA] focus:border-[#0C3C3C] bg-white"
+                />
             </div>
 
             <div className="space-y-1.5">
@@ -143,8 +145,10 @@ export default function Login() {
                   placeholder={mode === "register" ? "At least 8 characters" : "••••••••"}
                   value={form.password}
                   onChange={handleChange}
+                  onFocus={(e) => e.target.removeAttribute('readonly')}
                   required
                   minLength={mode === "register" ? 8 : 1}
+                  autoComplete="new-password"
                   className="border-[#D4CBBA] focus:border-[#0C3C3C] bg-white pr-10"
                 />
                 <button

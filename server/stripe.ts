@@ -20,9 +20,9 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "", {
 // Course slug -> price mapping (in cents USD)
 // These should match the prices displayed on the site
 const COURSE_PRICES: Record<string, { priceInCents: number; name: string }> = {
-  "cism": { priceInCents: 39900, name: "ISACA CISM - Certified Information Security Manager" },
+  "cism-certified-information-security-manager": { priceInCents: 39900, name: "ISACA CISM - Certified Information Security Manager" },
   "security-plus-sy0-701": { priceInCents: 7500, name: "CompTIA Security+ (SY0-701)" },
-  "ceh-v13": { priceInCents: 8900, name: "EC-Council CEH v13 - Certified Ethical Hacker" },
+  "ceh-certified-ethical-hacker": { priceInCents: 8900, name: "EC-Council CEH - Certified Ethical Hacker" },
   "secai-plus-cy0-001": { priceInCents: 5900, name: "CompTIA SecAI+ (CY0-001)" },
   "network-plus-n10-009": { priceInCents: 7900, name: "CompTIA Network+ (N10-009)" },
   "tech-plus-fc0-u71": { priceInCents: 4900, name: "CompTIA Tech+ (FC0-U71)" },

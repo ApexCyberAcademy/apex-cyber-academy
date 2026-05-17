@@ -371,8 +371,9 @@ function CourseCard({ course, index }: { course: CourseInfo; index: number }) {
 
 // Map frontend course IDs to backend Stripe slugs
 const COURSE_SLUG_MAP: Record<string, string> = {
-  "cism": "cism",
+  "cism": "cism-certified-information-security-manager",
   "secplus": "security-plus-sy0-701",
+  "ceh": "ceh-certified-ethical-hacker",
   "netplus": "network-plus-n10-009",
   "secai": "secai-plus-cy0-001",
   "techplus": "tech-plus-fc0-u71",
