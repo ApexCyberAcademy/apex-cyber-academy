@@ -110,7 +110,7 @@ export default function Login() {
                   value={form.name}
                   onChange={handleChange}
                   required
-                  className="border-[#D4CBBA] focus:border-[#0C3C3C] bg-white"
+                  className="border-[#D4CBBA] focus:border-[#0C3C3C] bg-white text-black"
                 />
               </div>
             )}
@@ -129,7 +129,7 @@ export default function Login() {
                   onFocus={(e) => e.target.removeAttribute('readonly')}
                   required
                   autoComplete="off"
-                  className="border-[#D4CBBA] focus:border-[#0C3C3C] bg-white"
+                  className="border-[#D4CBBA] focus:border-[#0C3C3C] bg-white text-black"
                 />
             </div>
 
@@ -149,7 +149,7 @@ export default function Login() {
                   required
                   minLength={mode === "register" ? 8 : 1}
                   autoComplete="new-password"
-                  className="border-[#D4CBBA] focus:border-[#0C3C3C] bg-white pr-10"
+                  className="border-[#D4CBBA] focus:border-[#0C3C3C] bg-white pr-10 text-black"
                 />
                 <button
                   type="button"
